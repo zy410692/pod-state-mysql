@@ -152,3 +152,15 @@ type Unstructured struct {
 ![img.png](img.png)
 
 
+# day3 informer
+
+https://blog.csdn.net/WangDong_CNDS/article/details/108417472?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522171693184616800225597082%2522%252C%2522scm%2522%253A%252220140713.130102334.pc%255Fcommercial.%2522%257D&request_id=171693184616800225597082&biz_id=0&utm_medium=distribute.pc_search_result.none-task-blog-2~all~insert_commercial~default-3-108417472-null-null.142^v100^pc_search_result_base7&utm_term=informer&spm=1018.2226.3001.4187
+SharedInformerFactory，Shared指的是在多个Informer/lister共享一个本地cache, 资源的变化会同时通知到cache和 listers
+如main.go所示
+就是通过informer.AddEventHandler增加自己的回调函数，通过onadd,onupdate,ondelete函数触发mysql持久化操作
+例子中初始化个nodeinformer,也可以初始化podinformer
+
+通过podinformer onadd的调用，mysql insert数据
+
+
+# day4 AddEventHander对podinformer进行监听，监听的数据通过钉钉发出
