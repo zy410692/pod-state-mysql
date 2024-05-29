@@ -201,6 +201,7 @@ ENTRYPOINT ["/app/main"]
 ```
 
 再换一个更小的镜像
+```
 # BUILD
 FROM golang:1.22-alpine as BUILD
 ENV GO111MODULE=on
@@ -219,3 +220,4 @@ FROM scratch
 # COPY --from=BUILD /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 COPY --from=BUILD /app/main /app/main
 ENTRYPOINT ["/app/main"]
+```
