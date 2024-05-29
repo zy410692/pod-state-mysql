@@ -164,3 +164,57 @@ SharedInformerFactory，Shared指的是在多个Informer/lister共享一个本�
 
 
 # day4 AddEventHander对podinformer进行监听，监听的数据通过钉钉发出
+通过dockerfile 
+
+```
+FROM golang:1.22-alpine
+ENV GO111MODULE=on
+WORKDIR /app
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+RUN go build main -o main.go
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+ENV HTTP_PORT=8080
+EXPOSE 8080
+ENTRYPOINT ["/app/main"]
+```
+通过多阶段精简一下体积
+# BUILD
+FROM golang:1.22-alpine as BUILD
+ENV GO111MODULE=on
+WORKDIR /app
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+RUN go build main -o main.go
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+ENV HTTP_PORT=8080
+EXPOSE 8080
+# BINARIES
+FROM alpine:latest
+COPY --from=BUILD /app/main /app/maini
+ENTRYPOINT ["/app/main"]
+```
+
+再换一个更小的镜像
+# BUILD
+FROM golang:1.22-alpine as BUILD
+ENV GO111MODULE=on
+WORKDIR /app
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+RUN go build main.go -o main
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build
+ENV HTTP_PORT=8080
+EXPOSE 8080
+# MINIATURE
+FROM scratch
+# 这个证书对我来说没有必要
+# COPY --from=BUILD /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=BUILD /app/main /app/main
+ENTRYPOINT ["/app/main"]
