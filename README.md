@@ -181,6 +181,7 @@ EXPOSE 8080
 ENTRYPOINT ["/app/main"]
 ```
 通过多阶段精简一下体积
+```
 # BUILD
 FROM golang:1.22-alpine as BUILD
 ENV GO111MODULE=on
